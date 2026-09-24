@@ -99,13 +99,19 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.9rem;
+            table-layout: fixed;
+        }
+
+        tr {
+            height: 60px;
         }
 
         th, td {
             border: 1px solid var(--border-color);
-            padding: 10px;
+            padding: 0;
             text-align: center;
             vertical-align: top;
+            box-sizing: border-box;
         }
 
         th {
@@ -113,6 +119,8 @@
             color: white;
             font-weight: 600;
             white-space: nowrap;
+            padding: 10px 5px;
+            height: 45px;
         }
 
         th.time-header {
@@ -126,23 +134,25 @@
             color: var(--text-main);
             vertical-align: middle;
             white-space: nowrap;
+            padding: 5px;
         }
+
+        /* Renkler doğrudan td elemanına uygulanıyor */
+        td.c-1 { background-color: #bae6fd; color: #0369a1; }
+        td.c-2 { background-color: #fde68a; color: #b45309; }
+        td.c-3 { background-color: #bbf7d0; color: #15803d; }
+        td.c-4 { background-color: #e9d5ff; color: #6b21a8; }
+        td.c-5 { background-color: #fecdd3; color: #be123c; }
+        td.c-6 { background-color: #99f6e4; color: #0f766e; }
 
         .course-card {
-            border-radius: 6px;
-            padding: 10px;
+            padding: 8px 10px;
             text-align: left;
-            height: 100%;
             box-sizing: border-box;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
-
-        .c-1 { background-color: #bae6fd; color: #0369a1; }
-        .c-2 { background-color: #fde68a; color: #b45309; }
-        .c-3 { background-color: #bbf7d0; color: #15803d; }
-        .c-4 { background-color: #e9d5ff; color: #6b21a8; }
-        .c-5 { background-color: #fecdd3; color: #be123c; }
-        .c-6 { background-color: #99f6e4; color: #0f766e; }
 
         .course-code {
             font-weight: 800;
@@ -152,25 +162,26 @@
 
         .course-name {
             font-weight: 700;
-            margin: 4px 0;
-            font-size: 0.95rem;
+            margin: 2px 0 4px 0;
+            font-size: 0.9rem;
             color: #0f172a;
         }
 
         .course-room {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 600;
             opacity: 0.9;
         }
 
         .course-instructor {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-style: italic;
-            margin-top: 6px;
+            margin-top: auto;
+            padding-top: 4px;
             opacity: 0.85;
         }
 
-        /* --- CANLI SAAT VE DERS DURUM PANENİ STİLLERİ --- */
+        /* --- CANLI SAAT VE DERS DURUM PANELİ STİLLERİ --- */
         .dashboard-panel {
             margin-top: 25px;
             background: linear-gradient(145deg, #18191c, #0d0e10);
@@ -186,7 +197,6 @@
             gap: 15px;
         }
 
-        /* Gerçekçi Dijital Ekran Çerçevesi */
         .digital-clock-frame {
             background: #050505;
             border: 2px solid #222;
@@ -238,9 +248,9 @@
         }
 
         @media (max-width: 768px) {
-            body { padding: 10px; }
+            body { padding: 10px; } 
             .container { padding: 15px; }
-            th, td { padding: 6px; font-size: 0.8rem; }
+            th, td { font-size: 0.8rem; }
             .digital-clock { font-size: 1.6rem; }
             .status-container { font-size: 0.95rem; }
         }
@@ -295,16 +305,15 @@ const scheduleData = {
         "15:30 - 16:20",
         "16:30 - 17:20"
     ],
-    // Saat aralıklarının dakika cinsinden başlangıç ve bitiş değerleri
     slotTimes: [
-        { start: 8 * 60 + 30, end: 9 * 60 + 20 },   // 08:30 - 09:20
-        { start: 9 * 60 + 30, end: 10 * 60 + 20 },  // 09:30 - 10:20
-        { start: 10 * 60 + 30, end: 11 * 60 + 20 }, // 10:30 - 11:20
-        { start: 11 * 60 + 30, end: 12 * 60 + 20 }, // 11:30 - 12:20
-        { start: 13 * 60 + 30, end: 14 * 60 + 20 }, // 13:30 - 14:20
-        { start: 14 * 60 + 30, end: 15 * 60 + 20 }, // 14:30 - 15:20
-        { start: 15 * 60 + 30, end: 16 * 60 + 20 }, // 15:30 - 16:20
-        { start: 16 * 60 + 30, end: 17 * 60 + 20 }  // 16:30 - 17:20
+        { start: 8 * 60 + 30, end: 9 * 60 + 20 },
+        { start: 9 * 60 + 30, end: 10 * 60 + 20 },
+        { start: 10 * 60 + 30, end: 11 * 60 + 20 },
+        { start: 11 * 60 + 30, end: 12 * 60 + 20 },
+        { start: 13 * 60 + 30, end: 14 * 60 + 20 },
+        { start: 14 * 60 + 30, end: 15 * 60 + 20 },
+        { start: 15 * 60 + 30, end: 16 * 60 + 20 },
+        { start: 16 * 60 + 30, end: 17 * 60 + 20 }
     ],
     days: ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"],
     courses: [
@@ -434,8 +443,8 @@ function renderSchedule(selectedDay) {
                 }
 
                 html += `
-                <td rowspan="${course.duration}">
-                    <div class="course-card ${course.colorClass}">
+                <td rowspan="${course.duration}" class="${course.colorClass}">
+                    <div class="course-card">
                         <div class="course-code">${course.code}</div>
                         <div class="course-name">${course.name}</div>
                         <div class="course-room">Derslik: ${course.room}</div>
@@ -454,7 +463,6 @@ function renderSchedule(selectedDay) {
     container.innerHTML = html;
 }
 
-// Saniye/Dakika/Saat formatlayıcı (0 olan birimleri eler)
 function formatTimeRemaining(totalSeconds) {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -468,17 +476,14 @@ function formatTimeRemaining(totalSeconds) {
     return parts.join(' ');
 }
 
-// Anlık Saat ve Ders Durum Motoru
 function updateLiveStatus() {
     const now = new Date();
     
-    // 1. Dijital Saati Güncelle
     const hStr = String(now.getHours()).padStart(2, '0');
     const mStr = String(now.getMinutes()).padStart(2, '0');
     const sStr = String(now.getSeconds()).padStart(2, '0');
     document.getElementById('digital-clock').textContent = `${hStr}:${mStr}:${sStr}`;
 
-    // 2. Ders Durum Hesabı
     const dayMap = { 1: "Pazartesi", 2: "Salı", 3: "Çarşamba", 4: "Perşembe", 5: "Cuma" };
     const currentDayName = dayMap[now.getDay()];
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -491,7 +496,6 @@ function updateLiveStatus() {
         return;
     }
 
-    // Bugünkü dersleri filtrele ve sırala
     const todaysCourses = scheduleData.courses
         .filter(c => c.day === currentDayName)
         .map(c => {
@@ -512,7 +516,6 @@ function updateLiveStatus() {
         return;
     }
 
-    // A. Şu an devam eden bir ders var mı?
     const activeCourse = todaysCourses.find(c => currentSecondsInDay >= c.startSec && currentSecondsInDay < c.endSec);
 
     if (activeCourse) {
@@ -522,7 +525,6 @@ function updateLiveStatus() {
         return;
     }
 
-    // B. Gelecekte başlayacak ders var mı?
     const upcomingCourse = todaysCourses.find(c => currentSecondsInDay < c.startSec);
 
     if (upcomingCourse) {
@@ -532,7 +534,6 @@ function updateLiveStatus() {
         return;
     }
 
-    // C. Bugünkü tüm dersler bittiyse
     statusEl.innerHTML = "Bugünkü tüm dersleriniz tamamlandı.";
 }
 
@@ -540,7 +541,6 @@ window.onload = () => {
     const autoDay = getDefaultDay();
     renderSchedule(autoDay);
     
-    // Canlı Saati Başlat
     updateLiveStatus();
     setInterval(updateLiveStatus, 1000);
 };
@@ -548,4 +548,3 @@ window.onload = () => {
 
 </body>
 </html>
-
