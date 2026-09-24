@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haftalık Ders Programı - ALİ BAYRAM</title>
+    <!-- Google Fonts: Monospace Dijital Saat için Orbitron Fontu -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .header .user-info {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .header .sub-info {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        th.time-header {
+            width: 110px;
+            background-color: #0f172a;
+        }
+
+        .time-slot {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--text-main);
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .course-card {
+            border-radius: 6px;
+            padding: 10px;
+            text-align: left;
+            height: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .c-1 { background-color: #bae6fd; color: #0369a1; }
+        .c-2 { background-color: #fde68a; color: #b45309; }
+        .c-3 { background-color: #bbf7d0; color: #15803d; }
+        .c-4 { background-color: #e9d5ff; color: #6b21a8; }
+        .c-5 { background-color: #fecdd3; color: #be123c; }
+        .c-6 { background-color: #99f6e4; color: #0f766e; }
+
+        .course-code {
+            font-weight: 800;
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+        }
+
+        .course-name {
+            font-weight: 700;
+            margin: 4px 0;
+            font-size: 0.95rem;
+            color: #0f172a;
+        }
+
+        .course-room {
+            font-size: 0.82rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .course-instructor {
+            font-size: 0.8rem;
+            font-style: italic;
+            margin-top: 6px;
+            opacity: 0.85;
+        }
+
+        /* --- CANLI SAAT VE DERS DURUM PANENİ STİLLERİ --- */
+        .dashboard-panel {
+            margin-top: 25px;
+            background: linear-gradient(145deg, #18191c, #0d0e10);
+            border: 3px solid #2d3035;
+            border-radius: 12px;
+            padding: 20px;
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        /* Gerçekçi Dijital Ekran Çerçevesi */
+        .digital-clock-frame {
+            background: #050505;
+            border: 2px solid #222;
+            border-radius: 8px;
+            padding: 12px 24px;
+            box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.15), 0 0 8px rgba(0, 0, 0, 0.9);
+            display: inline-block;
+        }
+
+        .digital-clock {
+            font-family: 'Orbitron', 'Courier New', monospace;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #ff2a2a;
+            letter-spacing: 3px;
+            text-shadow: 0 0 12px rgba(255, 42, 42, 0.8), 0 0 25px rgba(255, 0, 0, 0.4);
+        }
+
+        .status-container {
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-text {
+            color: #f1f5f9;
+            line-height: 1.4;
+        }
+
+        .status-highlight {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        .status-active {
+            color: #4ade80;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            th, td { padding: 6px; font-size: 0.8rem; }
+            .digital-clock { font-size: 1.6rem; }
+            .status-container { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h1>Akdeniz Üniversitesi - Ders Programı</h1>
+            <div class="sub-info">Turizm Fakültesi / Rekreasyon Yönetimi</div>
+        </div>
+        <div class="user-info">
+            20264005009 - ALİ BAYRAM
+        </div>
+    </div>
+
+    <!-- Filtreleme Butonları -->
+    <div class="controls">
+        <button class="filter-btn" onclick="renderSchedule('ALL')">Tüm Haftalık Tablo</button>
+        <button class="filter-btn" onclick="renderSchedule('Pazartesi')">Pazartesi</button>
+        <button class="filter-btn" onclick="renderSchedule('Salı')">Salı</button>
+        <button class="filter-btn" onclick="renderSchedule('Çarşamba')">Çarşamba</button>
+        <button class="filter-btn" onclick="renderSchedule('Perşembe')">Perşembe</button>
+        <button class="filter-btn" onclick="renderSchedule('Cuma')">Cuma</button>
+    </div>
+
+    <!-- Tablo Alanı -->
+    <div class="table-responsive" id="table-container"></div>
+
+    <!-- Canlı Dijital Saat ve Ders Durum Paneli -->
+    <div class="dashboard-panel">
+        <div class="digital-clock-frame">
+            <div class="digital-clock" id="digital-clock">00:00:00</div>
+        </div>
+        <div class="status-container">
+            <div class="status-text" id="status-text">Ders durumu hesaplanıyor...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const scheduleData = {
+    timeSlots: [
+        "08:30 - 09:20",
+        "09:30 - 10:20",
+        "10:30 - 11:20",
+        "11:30 - 12:20",
+        "13:30 - 14:20",
+        "14:30 - 15:20",
+        "15:30 - 16:20",
+        "16:30 - 17:20"
+    ],
+    // Saat aralıklarının dakika cinsinden başlangıç ve bitiş değerleri
+    slotTimes: [
+        { start: 8 * 60 + 30, end: 9 * 60 + 20 },   // 08:30 - 09:20
+        { start: 9 * 60 + 30, end: 10 * 60 + 20 },  // 09:30 - 10:20
+        { start: 10 * 60 + 30, end: 11 * 60 + 20 }, // 10:30 - 11:20
+        { start: 11 * 60 + 30, end: 12 * 60 + 20 }, // 11:30 - 12:20
+        { start: 13 * 60 + 30, end: 14 * 60 + 20 }, // 13:30 - 14:20
+        { start: 14 * 60 + 30, end: 15 * 60 + 20 }, // 14:30 - 15:20
+        { start: 15 * 60 + 30, end: 16 * 60 + 20 }, // 15:30 - 16:20
+        { start: 16 * 60 + 30, end: 17 * 60 + 20 }  // 16:30 - 17:20
+    ],
+    days: ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma"],
+    courses: [
+        {
+            code: "REY 101(1)",
+            name: "Turizm ve Kültür",
+            room: "Toplantı Salonu [90]",
+            instructor: "Doç. Dr. YAKIN EKİN",
+            day: "Pazartesi",
+            startSlot: 4,
+            duration: 2,
+            colorClass: "c-3"
+        },
+        {
+            code: "REY 103(1)",
+            name: "Genel Turizm Bilgisi",
+            room: "105 [48]",
+            instructor: "Prof. Dr. YUSUF YILMAZ",
+            day: "Salı",
+            startSlot: 5,
+            duration: 3,
+            colorClass: "c-6"
+        },
+        {
+            code: "REY 105(1)",
+            name: "İşletme Bilimine Giriş",
+            room: "Z04 [70]",
+            instructor: "Prof. Dr. MURAD ALPASLAN KASALAK",
+            day: "Çarşamba",
+            startSlot: 0,
+            duration: 3,
+            colorClass: "c-1"
+        },
+        {
+            code: "REY 125(1)",
+            name: "Yabancı Dil I (Rusça)",
+            room: "205 [72]",
+            instructor: "Öğr. Gör. MEHMET SONER OTRAKÇI",
+            day: "Perşembe",
+            startSlot: 0,
+            duration: 4,
+            colorClass: "c-2"
+        },
+        {
+            code: "ATA 101(1)",
+            name: "Atatürk İlkeleri ve İnkılap Tarihi I",
+            room: "206 [135]",
+            instructor: "Öğr. Gör. DERYA ÖGE SET",
+            day: "Perşembe",
+            startSlot: 4,
+            duration: 2,
+            colorClass: "c-4"
+        },
+        {
+            code: "TDB 101(1)",
+            name: "Türk Dili I",
+            room: "205 [98]",
+            instructor: "Öğr. Gör. BİLAL NARGÖZ",
+            day: "Cuma",
+            startSlot: 4,
+            duration: 2,
+            colorClass: "c-5"
+        }
+    ]
+};
+
+function getDefaultDay() {
+    const now = new Date();
+    let dayIndex = now.getDay();
+    const hours = now.getHours();
+
+    if (hours >= 23) {
+        dayIndex = (dayIndex + 1) % 7;
+    }
+
+    if (dayIndex === 0 || dayIndex === 6) {
+        return "Pazartesi";
+    }
+
+    const dayMap = {
+        1: "Pazartesi",
+        2: "Salı",
+        3: "Çarşamba",
+        4: "Perşembe",
+        5: "Cuma"
+    };
+
+    return dayMap[dayIndex] || "Pazartesi";
+}
+
+function renderSchedule(selectedDay) {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        if(btn.textContent.trim() === (selectedDay === 'ALL' ? 'Tüm Haftalık Tablo' : selectedDay)) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    const container = document.getElementById('table-container');
+    const activeDays = selectedDay === 'ALL' ? scheduleData.days : [selectedDay];
+
+    let html = `<table><thead><tr><th class="time-header">Saat</th>`;
+    
+    activeDays.forEach(day => {
+        html += `<th>${day}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+
+    const skipMatrix = Array(scheduleData.timeSlots.length).fill(null).map(() => Array(activeDays.length).fill(false));
+
+    scheduleData.timeSlots.forEach((slot, slotIdx) => {
+        html += `<tr><td class="time-slot">${slot}</td>`;
+
+        activeDays.forEach((day, dayIdx) => {
+            if (skipMatrix[slotIdx][dayIdx]) {
+                return;
+            }
+
+            const course = scheduleData.courses.find(c => c.day === day && c.startSlot === slotIdx);
+
+            if (course) {
+                for (let i = 1; i < course.duration; i++) {
+                    if (slotIdx + i < scheduleData.timeSlots.length) {
+                        skipMatrix[slotIdx + i][dayIdx] = true;
+                    }
+                }
+
+                html += `
+                <td rowspan="${course.duration}">
+                    <div class="course-card ${course.colorClass}">
+                        <div class="course-code">${course.code}</div>
+                        <div class="course-name">${course.name}</div>
+                        <div class="course-room">Derslik: ${course.room}</div>
+                        <div class="course-instructor">${course.instructor}</div>
+                    </div>
+                </td>`;
+            } else {
+                html += `<td></td>`;
+            }
+        });
+
+        html += `</tr>`;
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
+
+// Saniye/Dakika/Saat formatlayıcı (0 olan birimleri eler)
+function formatTimeRemaining(totalSeconds) {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let parts = [];
+    if (hours > 0) parts.push(`${hours} saat`);
+    if (minutes > 0) parts.push(`${minutes} dakika`);
+    if (seconds > 0 || parts.length === 0) parts.push(`${seconds} saniye`);
+
+    return parts.join(' ');
+}
+
+// Anlık Saat ve Ders Durum Motoru
+function updateLiveStatus() {
+    const now = new Date();
+    
+    // 1. Dijital Saati Güncelle
+    const hStr = String(now.getHours()).padStart(2, '0');
+    const mStr = String(now.getMinutes()).padStart(2, '0');
+    const sStr = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('digital-clock').textContent = `${hStr}:${mStr}:${sStr}`;
+
+    // 2. Ders Durum Hesabı
+    const dayMap = { 1: "Pazartesi", 2: "Salı", 3: "Çarşamba", 4: "Perşembe", 5: "Cuma" };
+    const currentDayName = dayMap[now.getDay()];
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const currentSecondsInDay = currentMinutes * 60 + now.getSeconds();
+
+    const statusEl = document.getElementById('status-text');
+
+    if (!currentDayName) {
+        statusEl.innerHTML = "Bugün hafta sonu, ders bulunmuyor.";
+        return;
+    }
+
+    // Bugünkü dersleri filtrele ve sırala
+    const todaysCourses = scheduleData.courses
+        .filter(c => c.day === currentDayName)
+        .map(c => {
+            const startSlotObj = scheduleData.slotTimes[c.startSlot];
+            const endSlotObj = scheduleData.slotTimes[c.startSlot + c.duration - 1];
+            return {
+                ...c,
+                startMinutes: startSlotObj.start,
+                endMinutes: endSlotObj.end,
+                startSec: startSlotObj.start * 60,
+                endSec: endSlotObj.end * 60
+            };
+        })
+        .sort((a, b) => a.startMinutes - b.startMinutes);
+
+    if (todaysCourses.length === 0) {
+        statusEl.innerHTML = "Bugün için kayıtlı dersiniz bulunmuyor.";
+        return;
+    }
+
+    // A. Şu an devam eden bir ders var mı?
+    const activeCourse = todaysCourses.find(c => currentSecondsInDay >= c.startSec && currentSecondsInDay < c.endSec);
+
+    if (activeCourse) {
+        const remainingSec = activeCourse.endSec - currentSecondsInDay;
+        const formattedRemaining = formatTimeRemaining(remainingSec);
+        statusEl.innerHTML = `Şu an <span class="status-active">${activeCourse.name}</span> dersi devam ediyor. <br><small style="color:#cbd5e1; font-weight:normal;">(Bitişine ${formattedRemaining} kaldı)</small>`;
+        return;
+    }
+
+    // B. Gelecekte başlayacak ders var mı?
+    const upcomingCourse = todaysCourses.find(c => currentSecondsInDay < c.startSec);
+
+    if (upcomingCourse) {
+        const diffSec = upcomingCourse.startSec - currentSecondsInDay;
+        const formattedDiff = formatTimeRemaining(diffSec);
+        statusEl.innerHTML = `<span class="status-highlight">${formattedDiff}</span> içinde <span class="status-highlight">${upcomingCourse.name}</span> dersi başlayacak.`;
+        return;
+    }
+
+    // C. Bugünkü tüm dersler bittiyse
+    statusEl.innerHTML = "Bugünkü tüm dersleriniz tamamlandı.";
+}
+
+window.onload = () => {
+    const autoDay = getDefaultDay();
+    renderSchedule(autoDay);
+    
+    // Canlı Saati Başlat
+    updateLiveStatus();
+    setInterval(updateLiveStatus, 1000);
+};
+</script>
+
+</body>
+</html>
+
